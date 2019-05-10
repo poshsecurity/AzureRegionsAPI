@@ -20,6 +20,20 @@
       "path": "regionfiles/standard.xml",
       "connection": "MyStorageConnectionAppSetting",
       "direction": "out"
+    },
+    {
+      "name": "China",
+      "type": "blob",
+      "path": "regionfiles/china.xml",
+      "connection": "MyStorageConnectionAppSetting",
+      "direction": "out"
+    }
+    ,{
+      "name": "Germany",
+      "type": "blob",
+      "path": "regionfiles/germany.xml",
+      "connection": "MyStorageConnectionAppSetting",
+      "direction": "out"
     }
   ]
 }
