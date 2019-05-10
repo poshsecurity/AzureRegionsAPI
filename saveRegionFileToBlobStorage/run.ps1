@@ -4,7 +4,7 @@ using namespace System.Net
 param($Request, $TriggerMetadata)
 
 # Write to the Azure Functions log stream.
-Write-Host "PowerShell HTTP trigger function processed a request."
+Write-Host "[saveRegionFileToBlobStorage] PowerShell HTTP trigger function processed a request."
 
 try {
     $baseURL = 'https://azureregions.azurewebsites.net/api/GetRegionFile?Code={0}&Region={1}'
@@ -12,8 +12,10 @@ try {
     #$regionFiles = @('Standard', 'China', 'Germany')
     $regionFiles = @('Standard')
     foreach ($regionFile in $regionFiles) {
+        Write-Host "[saveRegionFileToBlobStorage] Processing $regionFile"
         $fileURL = $baseURL -f $authCode, $regionFile
         $apiResponse = invoke-webrequest $fileURL -UseBasicParsing -Method GET
+        Write-Host "[saveRegionFileToBlobStorage] Saving file $regionFile"
         Push-OutputBinding -Name $regionFile -Value $apiResponse
     }
     $status = [HttpStatusCode]::OK
@@ -22,6 +24,8 @@ try {
     $status = [HttpStatusCode]::BadRequest
     $Body = "failed $_"
 }
+
+Write-Host "[saveRegionFileToBlobStorage] Output HTTP Response"
 
 # Associate values to output bindings by calling 'Push-OutputBinding'.
 Push-OutputBinding -Name Response -Value ([HttpResponseContext]@{
