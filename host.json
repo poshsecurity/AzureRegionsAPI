@@ -2,5 +2,9 @@
   "version": "2.0",
   "managedDependency": {
     "enabled": true
-  }
+  },
+  "extensionBundle": {
+    "id": "Microsoft.Azure.WebJobs.Extensions.Storage",
+    "version": "3.0.4"
+}
 }
