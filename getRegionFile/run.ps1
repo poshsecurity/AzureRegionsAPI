@@ -7,7 +7,7 @@ param($Request, $TriggerMetadata)
 Write-Host "PowerShell HTTP trigger function processed a request."
 
 # Interact with query parameters or the body of the request.
-$region = $Request.Query.Region
+$region = $Request.Query.Region.tolower()
 if (-not $name) {
     $region = $Request.Body.Region.tolower()
 }
@@ -40,7 +40,6 @@ if (@('standard', 'china', 'germany') -contains $region) {
         $body = "Error fetching Download Page"
     }
     $DownloadLink = ($DownloadPage.Links | Where-Object -FilterScript {$_.outerHTML -match 'Click here' -and $_.href -match '.xml'}).href[0]
-
     Write-Host 'Downloading and creating XML object'
     try {
         $XMLFile = Invoke-WebRequest -UseBasicParsing -Uri $DownloadLink
@@ -48,7 +47,6 @@ if (@('standard', 'china', 'germany') -contains $region) {
         $status = [HttpStatusCode]::BadRequest
         $body = "Error fetching XML file"
     }
-
     $status = [HttpStatusCode]::OK
     $body = $XMLFile.toString()
     $contentType = 'text/xml'

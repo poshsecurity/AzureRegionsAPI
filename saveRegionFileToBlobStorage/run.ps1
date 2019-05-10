@@ -19,7 +19,7 @@ try {
     $Body = 'success'
 } catch {
     $status = [HttpStatusCode]::BadRequest
-    $Body = 'failed'
+    $Body = "failed $_"
 }
 
 # Associate values to output bindings by calling 'Push-OutputBinding'.
