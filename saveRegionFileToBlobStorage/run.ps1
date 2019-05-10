@@ -16,7 +16,8 @@ try {
         $fileURL = $baseURL -f $authCode, $regionFile
         $apiResponse = invoke-webrequest $fileURL -UseBasicParsing -Method GET
         Write-Host "[saveRegionFileToBlobStorage] Saving file $regionFile"
-        Push-OutputBinding -Name $regionFile -Value $apiResponse
+        #Push-OutputBinding -Name $regionFile -Value $apiResponse -Clobber
+
     }
     $status = [HttpStatusCode]::OK
     $Body = 'success'
