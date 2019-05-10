@@ -9,7 +9,8 @@ Write-Host "PowerShell HTTP trigger function processed a request."
 try {
     $baseURL = 'https://azureregions.azurewebsites.net/api/GetRegionFile?Code={0}&Region={1}'
     $authCode = $ENV:AdminAuth
-    $regionFiles = @('Standard', 'China', 'Germany')
+    #$regionFiles = @('Standard', 'China', 'Germany')
+    $regionFiles = @('Standard')
     foreach ($regionFile in $regionFiles) {
         $fileURL = $baseURL -f $authCode, $regionFile
         $apiResponse = invoke-webrequest $fileURL -UseBasicParsing
