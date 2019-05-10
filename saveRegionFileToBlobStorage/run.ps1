@@ -8,11 +8,13 @@ Write-Host "[saveRegionFileToBlobStorage] PowerShell HTTP trigger function proce
 
 try {
     $baseURL = 'https://azureregions.azurewebsites.net/api/GetRegionFile?Code={0}&Region={1}'
+    #$baseURL = 'http://localhost:7071/api/GetRegionFile?Code={0}&Region={1}'
     $authCode = $ENV:AdminAuth
     $regionFiles = @('Standard', 'China', 'Germany')
     foreach ($regionFile in $regionFiles) {
         Write-Host "[saveRegionFileToBlobStorage] Processing $regionFile"
         $fileURL = $baseURL -f $authCode, $regionFile
+        Write-Host "[saveRegionFileToBlobStorage] Downloading $fileURL"
         $apiResponse = invoke-webrequest $fileURL -UseBasicParsing -Method GET
         Write-Host "[saveRegionFileToBlobStorage] Saving file $regionFile"
         Push-OutputBinding -Name $regionFile -Value ("$apiResponse") -Clobber
