@@ -7,7 +7,7 @@ param($Request, $TriggerMetadata)
 Write-Host "PowerShell HTTP trigger function processed a request."
 
 try {
-    $Subscriptions = (Get-AzContext -ListAvailable)
+    $Subscriptions = (Get-AzContext -ListAvailable).count
     $status = [HttpStatusCode]::OK
     $body = "There are $Subscriptions Subscriptions"
 } catch {
