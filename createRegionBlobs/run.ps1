@@ -57,7 +57,11 @@ $AzureRegions = @{
     'UAE Central'         = 'uaec'
 }
 
-$RequestXML = Select-Xml -Content $InputBlob.toString() -XPath /
+
+$bytes = [System.Text.Encoding]::Unicode.GetBytes($InputBlob) 
+$string = [System.Text.Encoding]::ASCII.GetString($bytes)
+
+$RequestXML = Select-Xml -Content $string -XPath /
 $Regions = $RequestXML.Node.AzurePublicIpAddresses.Region
 
 $Con = New-AzStorageContext -ConnectionString $env:MyStorageConnectionAppSetting
@@ -72,6 +76,7 @@ foreach ($Region in $Regions)
     Write-Host ('Processing region: {0}' -f $RegionName)
     $filename = '{0}.json' -f $RegionName
 
+    Write-Host "saving blob $filename"
     Out-File -FilePath $filename -InputObject ($region.IpRange.subnet | convertto-json)
     Set-AzStorageBlobContent -File $filename -Container 'azureregions' -Context $con -Force
 
