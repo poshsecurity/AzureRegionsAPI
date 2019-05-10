@@ -13,7 +13,7 @@ try {
     $regionFiles = @('Standard')
     foreach ($regionFile in $regionFiles) {
         $fileURL = $baseURL -f $authCode, $regionFile
-        $apiResponse = invoke-webrequest $fileURL -UseBasicParsing
+        $apiResponse = invoke-webrequest $fileURL -UseBasicParsing -Method GET
         Push-OutputBinding -Name $regionFile -Value $apiResponse
     }
     $status = [HttpStatusCode]::OK
