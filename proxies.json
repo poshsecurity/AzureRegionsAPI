@@ -1,4 +1,14 @@
 {
   "$schema": "http://json.schemastore.org/proxies",
-  "proxies": {}
+  "proxies": {
+    "Region": {
+      "matchCondition": {
+          "route": "region/{region}",
+          "methods": [
+              "GET"
+          ]
+      },
+      "backendUri": "https://azureregionsprod.blob.core.windows.net/regionblobs/{region}.json"
+  }
+  }
 }
