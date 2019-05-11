@@ -63,7 +63,7 @@ $string = [System.Text.Encoding]::ASCII.GetString($bytes)
 Write-Host "[createRegionBlobs] converted from bytes to string"
 
 Write-Host "[createRegionBlobs] getting xml"
-$RequestXML = Select-Xml -Content $string -XPath /
+$RequestXML = [xml]$string
 $Regions = $RequestXML.AzurePublicIpAddresses.Region
 
 Write-Host "[createRegionBlobs] getting storage context"
