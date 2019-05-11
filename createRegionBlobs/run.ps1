@@ -64,7 +64,7 @@ Write-Host "[createRegionBlobs] converted from bytes to string"
 
 Write-Host "[createRegionBlobs] getting xml"
 $RequestXML = Select-Xml -Content $string -XPath /
-$Regions = $RequestXML.Node.AzurePublicIpAddresses.Region
+$Regions = $RequestXML.AzurePublicIpAddresses.Region
 
 Write-Host "[createRegionBlobs] getting storage context"
 $Con = New-AzStorageContext -ConnectionString $env:MyStorageConnectionAppSetting
