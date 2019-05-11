@@ -51,7 +51,9 @@ if (@('standard', 'china', 'germany') -contains $region) {
     
     Write-Host 'Saving to blob storage'
     try {
-        Push-OutputBinding -Name $Region -Value ("$XMLFile") -Clobber
+        
+
+        Push-OutputBinding -Name $Region.toLower() -Value ("$XMLFile") -Clobber
     } catch {
         $status = [HttpStatusCode]::BadRequest
         $body = "Error sacing file"
