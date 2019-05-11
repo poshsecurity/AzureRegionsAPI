@@ -60,12 +60,16 @@ $AzureRegions = @{
 
 $bytes = [System.Text.Encoding]::Unicode.GetBytes($InputBlob) 
 $string = [System.Text.Encoding]::ASCII.GetString($bytes)
+Write-Host "[createRegionBlobs] converted from bytes to string"
 
+Write-Host "[createRegionBlobs] getting xml"
 $RequestXML = Select-Xml -Content $string -XPath /
 $Regions = $RequestXML.Node.AzurePublicIpAddresses.Region
 
+Write-Host "[createRegionBlobs] getting storage context"
 $Con = New-AzStorageContext -ConnectionString $env:MyStorageConnectionAppSetting
 
+Write-Host "[createRegionBlobs] processing regions in file"
 foreach ($Region in $Regions)
 {
     $BackendRegionName = $Region.Name
@@ -78,6 +82,6 @@ foreach ($Region in $Regions)
 
     Write-Host "saving blob $filename"
     Out-File -FilePath $filename -InputObject ($region.IpRange.subnet | convertto-json)
-    Set-AzStorageBlobContent -File $filename -Container 'azureregions' -Context $con -Force
+    Set-AzStorageBlobContent -File $filename -Container 'regionblobs' -Context $con -Force
 
 }
