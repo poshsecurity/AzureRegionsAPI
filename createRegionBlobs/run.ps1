@@ -76,7 +76,7 @@ foreach ($Region in $Regions)
     $RegionName = $AzureRegions.GetEnumerator().Where({$_.Value -eq $BackendRegionName}).Name
 
     Write-Host ('Processing region: {0}' -f $RegionName)
-    $filename = Join-path -FilePath $temp -ChildPath ('{0}.json' -f $RegionName)
+    $filename = Join-path -Path $temp -ChildPath ('{0}.json' -f $RegionName)
 
     Write-Host "saving blob $filename"
 
