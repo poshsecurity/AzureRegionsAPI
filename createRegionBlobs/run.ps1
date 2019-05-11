@@ -80,7 +80,7 @@ foreach ($Region in $Regions)
 
     Write-Host "saving blob $filename"
 
-    Out-File -FilePath $filename -InputObject ($region.IpRange.subnet | convertto-json)
+    Out-File -FilePath (($filename).ToLower()) -InputObject ($region.IpRange.subnet | convertto-json)
 
     Set-AzStorageBlobContent -File $filename -Container 'regionblobs' -Context $con -Force
 
