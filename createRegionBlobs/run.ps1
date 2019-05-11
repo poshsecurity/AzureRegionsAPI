@@ -1,7 +1,7 @@
 using namespace System.Net
 
 # Input bindings are passed in via param block.
-param([byte[]] $InputBlob, $TriggerMetadata)
+param([string] $InputBlob, $TriggerMetadata)
 
 # Write out the blob name and size to the information log.
 Write-Host "PowerShell Blob trigger function Processed blob! Name: $($TriggerMetadata.Name) Size: $($InputBlob.Length) bytes"
@@ -58,12 +58,12 @@ $AzureRegions = @{
 }
 
 
-$bytes = [System.Text.Encoding]::Unicode.GetBytes($InputBlob) 
-$string = [System.Text.Encoding]::ASCII.GetString($bytes)
-Write-Host "[createRegionBlobs] converted from bytes to string"
+#$bytes = [System.Text.Encoding]::Unicode.GetBytes($InputBlob) 
+#$string = [System.Text.Encoding]::ASCII.GetString($bytes)
+#Write-Host "[createRegionBlobs] converted from bytes to string"
 
 Write-Host "[createRegionBlobs] getting xml"
-$RequestXML = [xml]$string
+$RequestXML = [xml]$InputBlob
 Write-host $RequestXML
 $Regions = $RequestXML.AzurePublicIpAddresses.Region
 Write-host $Regions
