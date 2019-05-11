@@ -64,12 +64,13 @@ Write-Host "[createRegionBlobs] converted from bytes to string"
 
 Write-Host "[createRegionBlobs] getting xml"
 $RequestXML = [xml]$string
+Write-host $RequestXML
 $Regions = $RequestXML.AzurePublicIpAddresses.Region
-
+Write-host $Regions
 Write-Host "[createRegionBlobs] getting storage context"
 $Con = New-AzStorageContext -ConnectionString $env:MyStorageConnectionAppSetting
 
-Write-Host "[createRegionBlobs] processing regions in file"
+Write-Host "[createRegionBlobs] processing regions in file $Regions.Count"
 foreach ($Region in $Regions)
 {
     $BackendRegionName = $Region.Name
