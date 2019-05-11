@@ -8,7 +8,7 @@ Write-Host "PowerShell HTTP trigger function processed a request."
 
 # Interact with query parameters or the body of the request.
 $region = $Request.Query.Region.tolower()
-if (-not $name) {
+if (-not $region) {
     $region = $Request.Body.Region.tolower()
 }
 
@@ -39,6 +39,7 @@ if (@('standard', 'china', 'germany') -contains $region) {
         $status = [HttpStatusCode]::BadRequest
         $body = "Error fetching Download Page"
     }
+
     $DownloadLink = ($DownloadPage.Links | Where-Object -FilterScript {$_.outerHTML -match 'Click here' -and $_.href -match '.xml'}).href[0]
     Write-Host 'Downloading and creating XML object'
     try {
@@ -47,19 +48,26 @@ if (@('standard', 'china', 'germany') -contains $region) {
         $status = [HttpStatusCode]::BadRequest
         $body = "Error fetching XML file"
     }
+    
+    Write-Host 'Saving to blob storage'
+    try {
+        Push-OutputBinding -Name $Region -Value ("$XMLFile") -Clobber
+    } catch {
+        $status = [HttpStatusCode]::BadRequest
+        $body = "Error sacing file"
+    }
+
     $status = [HttpStatusCode]::OK
-    $body = $XMLFile.toString()
-    $contentType = 'text/xml'
+    $body = "Success"
 }
 else {
     $status = [HttpStatusCode]::BadRequest
     $body = "Please pass a region on the query string or in the request body."
-    $contentType = 'text/plain'
 }
 
 # Associate values to output bindings by calling 'Push-OutputBinding'.
 Push-OutputBinding -Name Response -Value ([HttpResponseContext]@{
     StatusCode = $status
     Body = $body
-    ContentType = $contentType
+    $contentType = 'text/plain'
 })
