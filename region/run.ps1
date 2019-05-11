@@ -57,4 +57,5 @@ $regions = @(
 Push-OutputBinding -Name Response -Value ([HttpResponseContext]@{
     StatusCode = [HttpStatusCode]::OK
     Body = $regions
+    ContentType = 'application/json'
 })

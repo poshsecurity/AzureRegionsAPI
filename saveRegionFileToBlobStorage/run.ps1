@@ -32,4 +32,5 @@ Write-Host "[saveRegionFileToBlobStorage] Output HTTP Response"
 Push-OutputBinding -Name Response -Value ([HttpResponseContext]@{
     StatusCode = $status
     Body = $body
+    ContentType = 'text/plain'
 })

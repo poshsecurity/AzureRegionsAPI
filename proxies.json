@@ -8,7 +8,10 @@
               "GET"
           ]
       },
-      "backendUri": "https://azureregionsprod.blob.core.windows.net/regionblobs/{region}.json"
+      "backendUri": "https://azureregionsprod.blob.core.windows.net/regionblobs/{region}.json",
+      "responseOverrides": {
+        "response.header.Content-Type": "application/json"
+      }
     },
     "RegionList": {
       "matchCondition": {
@@ -17,7 +20,10 @@
               "GET"
           ]
       },
-      "backendUri": "https://azureregions.azurewebsites.net/api/region"
+      "backendUri": "https://azureregions.azurewebsites.net/api/region",
+      "responseOverrides": {
+        "response.header.Content-Type": "application/json"
+      }
     }
   }
 }
