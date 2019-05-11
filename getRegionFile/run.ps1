@@ -48,13 +48,13 @@ if (@('standard', 'china', 'germany') -contains $region) {
         $status = [HttpStatusCode]::BadRequest
         $body = "Error fetching XML file"
     }
-    
+
     Write-Host 'Saving to blob storage'
     try {
         Push-OutputBinding -Name ($Region.toLower()) -Value ("$XMLFile") -Clobber
     } catch {
         $status = [HttpStatusCode]::BadRequest
-        $body = "Error sacing file"
+        $body = "Error saving file"
     }
 
     $status = [HttpStatusCode]::OK
@@ -69,5 +69,5 @@ else {
 Push-OutputBinding -Name Response -Value ([HttpResponseContext]@{
     StatusCode = $status
     Body = $body
-    $contentType = 'text/plain'
+    contentType = 'text/plain'
 })
