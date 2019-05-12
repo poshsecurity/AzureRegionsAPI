@@ -4,7 +4,7 @@ using namespace System.Net
 param($Request, $TriggerMetadata)
 
 # Write to the Azure Functions log stream.
-Write-Host "PowerShell HTTP trigger function processed a request."
+Write-Host '[getRegionFile] PowerShell HTTP trigger function processed a request.'
 
 # Interact with query parameters or the body of the request.
 $region = $Request.Query.Region.tolower()
@@ -12,62 +12,65 @@ if (-not $region) {
     $region = $Request.Body.Region.tolower()
 }
 
-Write-Host "Region = $region"
+Write-Host '[getRegionFile] Region = $region'
 
 if (@('standard', 'china', 'germany') -contains $region) {
 
-    switch ($Region) {
+    switch ($region) {
         'china' {
-            Write-Host 'Downloading... Windows Azure Datacenter IP Ranges in China'
-            $MicrosoftDownloadsURL = 'https://www.microsoft.com/en-us/download/confirmation.aspx?id=42064'
+            Write-Host '[getRegionFile] Downloading... Windows Azure Datacenter IP Ranges in China'
+            $microsoftDownloadsURL = 'https://www.microsoft.com/en-us/download/confirmation.aspx?id=42064'
         }
 
         'germany' {
-            Write-Host 'Downloading... Windows Azure Datacenter IP Ranges in Germany'
-            $MicrosoftDownloadsURL = 'https://www.microsoft.com/en-us/download/confirmation.aspx?id=54770'
+            Write-Host '[getRegionFile] Downloading... Windows Azure Datacenter IP Ranges in Germany'
+            $microsoftDownloadsURL = 'https://www.microsoft.com/en-us/download/confirmation.aspx?id=54770'
         }
 
         Default {
-            Write-Host 'Downloading... Microsoft Azure Datacenter IP Ranges'
-            $MicrosoftDownloadsURL = 'https://www.microsoft.com/en-us/download/confirmation.aspx?id=41653'
+            Write-Host '[getRegionFile] Downloading... Microsoft Azure Datacenter IP Ranges'
+            $microsoftDownloadsURL = 'https://www.microsoft.com/en-us/download/confirmation.aspx?id=41653'
         }
     }
 
     try {
-        $DownloadPage = Invoke-WebRequest -UseBasicParsing -Uri $MicrosoftDownloadsURL
-    } catch {
+        $downloadPage = Invoke-WebRequest -UseBasicParsing -Uri $microsoftDownloadsURL
+    }
+    catch {
         $status = [HttpStatusCode]::BadRequest
-        $body = "Error fetching Download Page"
+        $body = 'Error fetching Download Page'
     }
 
-    $DownloadLink = ($DownloadPage.Links | Where-Object -FilterScript {$_.outerHTML -match 'Click here' -and $_.href -match '.xml'}).href[0]
-    Write-Host 'Downloading and creating XML object'
+    $downloadLink = ($downloadPage.Links | Where-Object -FilterScript {$_.outerHTML -match 'Click here' -and $_.href -match '.xml'}).href[0]
+    Write-Host '[getRegionFile] Downloading and creating XML object'
     try {
-        $XMLFile = Invoke-WebRequest -UseBasicParsing -Uri $DownloadLink
-    } catch {
+        $XMLFile = Invoke-WebRequest -UseBasicParsing -Uri $downloadLink
+    }
+    catch {
         $status = [HttpStatusCode]::BadRequest
-        $body = "Error fetching XML file"
+        $body = 'Error fetching XML file'
     }
 
-    Write-Host 'Saving to blob storage'
+    Write-Host '[getRegionFile] Saving to blob storage'
     try {
-        Push-OutputBinding -Name ($Region.toLower()) -Value ("$XMLFile") -Clobber
-    } catch {
+        Push-OutputBinding -Name ($region.toLower()) -Value ("$XMLFile") -Clobber
+    }
+    catch {
         $status = [HttpStatusCode]::BadRequest
-        $body = "Error saving file"
+        $body = 'Error saving file'
     }
 
     $status = [HttpStatusCode]::OK
-    $body = "Success"
+    $body = 'Success'
 }
 else {
     $status = [HttpStatusCode]::BadRequest
-    $body = "Please pass a region on the query string or in the request body."
+    $body = 'Please pass a valid region on the query string or in the request body.'
 }
 
 # Associate values to output bindings by calling 'Push-OutputBinding'.
 Push-OutputBinding -Name Response -Value ([HttpResponseContext]@{
-    StatusCode = $status
-    Body = $body
-    contentType = 'text/plain'
-})
+        StatusCode  = $status
+        Body        = $body
+        contentType = 'text/plain'
+    })

@@ -73,14 +73,14 @@ foreach ($Region in $Regions)
     $BackendRegionName = $Region.Name
 
     # Translate each region name to something friendly
-    $RegionName = $AzureRegions.GetEnumerator().Where({$_.Value -eq $BackendRegionName}).Name
+    $RegionName = $AzureRegions.GetEnumerator().Where({$_.Value -eq $BackendRegionName}).Name.toLower()
 
     Write-Host ('Processing region: {0}' -f $RegionName)
     $filename = Join-path -Path $temp -ChildPath ('{0}.json' -f $RegionName)
 
     Write-Host "saving blob $filename"
 
-    Out-File -FilePath (($filename).ToLower()) -InputObject ($region.IpRange.subnet | convertto-json)
+    Out-File -FilePath $filename -InputObject ($region.IpRange.subnet | convertto-json)
 
     Set-AzStorageBlobContent -File $filename -Container 'regionblobs' -Context $con -Force
 
